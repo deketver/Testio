@@ -14,24 +14,5 @@
     </form>
 </div>
 
-<script>
-     
-    $('#submit_btn').click(function(){
-       $('#file').click();
-    });
-
-    $('input[name=file]').change(function(){
-       var names = [];
-       for (var i = 0; i < $(this).get(0).files.length; ++i) {
-           names.push($(this).get(0).files[i].name);
-       }
-       
-       alert(names);
-       $('#filename').val('Selected files: ' + names.length);
-    });
-
-       
-   </script>
-
 
 {% endblock %}

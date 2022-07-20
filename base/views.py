@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import Visitor, Test_project, High_level_tests
 from .forms import ProjectForm, VisitorForm, VisitorFormUser, VisitorFormUpdate, UploadFileForm
+from django.db.models import Q
 from django.views.generic.edit import FormView
 from django.contrib.auth.decorators import user_passes_test
 from . data_load import load_file
@@ -52,20 +53,48 @@ def login_page(request):
     return render(request, 'base/login_autentizace.html', context)
 
 def project(request, pk):
+    filter_active = False
+    permission = request.user.is_superuser
 
     product = request.GET.get('product') if request.GET.get('product') != None else ''
-    from_date = request.GET.get('from') if request.GET.get('from') != None else ''
-    until = request.GET.get('until') if request.GET.get('until') != None else ''
+    sfcode = request.GET.get('sfcode') if request.GET.get('sfcode') != None else ''
+    family = request.GET.get('family') if request.GET.get('family') != None else ''
+    status = request.GET.get('status') if request.GET.get('status') != None else ''
+    failgroup = request.GET.get('failgroup') if request.GET.get('failgroup') != None else ''
 
     project = Test_project.objects.get(id=pk)
     available_data = High_level_tests.objects.filter(project=pk)
 
     distinct_names = High_level_tests.objects.all().values('name').distinct()
     distinct_sf_codes = High_level_tests.objects.all().values('sf_code').distinct()
+    distinct_family = High_level_tests.objects.all().values('family').distinct()
+    distinct_results = High_level_tests.objects.all().values('result').distinct()
+    distinct_fail = High_level_tests.objects.all().values('fail_group_name').distinct()
+    last_name = ''
+    last_sf_code = ''
+    last_family = ''
+    last_result = ''
+    last_fail = ''
 
-    permission = request.user.is_superuser
 
-    context = {'project': project, 'data': available_data, 'pk': pk, 'names': distinct_names, 'sfcodes': distinct_sf_codes}
+    if product != '' or sfcode != '' or family != '' or status != '' or failgroup != '':
+        available_data = High_level_tests.objects.filter(Q(name__icontains=product)
+        & Q(sf_code__icontains=sfcode) & Q(family__icontains=family) & Q(result__icontains=status)
+        & Q(fail_group_name__icontains=failgroup))
+        last_name=product
+        last_sf_code = sfcode
+        last_family = family
+        last_result = status
+        last_fail = failgroup
+        filter_active = True
+
+
+        #available_data = High_level_tests.objects.filter(Q(name__icontains=product))
+        #last_name=product
+
+    context = {'project': project, 'data': available_data, 'pk': pk, 'names': distinct_names, 'sfcodes': distinct_sf_codes, 'family': distinct_family,
+                'test_results': distinct_results, 'group_fail': distinct_fail, 'last_name': last_name, 'last_sf_code': last_sf_code, 'last_family': last_family,
+                'last_result': last_result, 'last_fail': last_fail, 'filter_active': filter_active}
 
     if permission==False:
         visitor = Visitor.objects.get(id=request.user.id)

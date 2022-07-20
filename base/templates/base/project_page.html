@@ -10,44 +10,73 @@
 
 {% endif %}
 
-{% if data %}
+{% if filter_active or data %}
 
 <form method="GET" action="{% url 'project' pk %}" class="mb-0">
     <label  class = "ms-5 navlabel" for="">Name:</label>
     <select class="ms-1 me-5 navselect " name="product" id="">
+        <option value="">Show All</option>
         {% for name in names %}
-                
+        {% if last_name != '' and name.name == last_name %}
+        <option value="{{ name.name }}" selected="selected">{{ name.name }}</option>
+        {% else %}
         <option value="{{ name.name }}">{{ name.name }}</option>
+        {% endif %}
         
         {% endfor %}
     </select>
     
     <label  class = "ms-5 navlabel" for="">Sf Code:</label>
     <select class="ms-1 me-5 navselect" data-style="btn-primary" name="sfcode" id="">
-        {% for code in sfcodes %}
-                
-        <option value="{{ code.sf_code }}">{{ code.sf_code }}</option>
+        <option value="">Show All</option>
         
+        {% for code in sfcodes %}
+        {% if last_sf_code != '' and code.sf_code == last_sf_code %}
+        <option value="{{ code.sf_code }}" selected="selected">{{ code.sf_code }}</option>
+        {% else %}
+        <option value="{{ code.sf_code }}">{{ code.sf_code }}</option>
+        {% endif %}
+        {% endfor %}
+    </select>
+    
+    <label  class = "ms-5 navlabel" for="">Family:</label>
+    <select class="ms-1 me-5 navselect " data-style="btn-primary" name="family" id="" >
+        <option value="">Show All</option>
+        {% for member in family %}
+        {% if last_family != '' and member.family == last_family %}
+        <option value="{{ member.family }}" selected="selected">{{ member.family}}</option>
+        {% else %}
+        <option value="{{ member.family }}">{{ member.family}}</option>
+        {% endif %}
         {% endfor %}
     </select>
 
-    <label  class = "ms-5 navlabel" for="">Family:</label>
-    <select class="ms-1 me-5 navselect " data-style="btn-primary" name="family" id="">
-
     <label  class = "ms-5 navlabel" for="">Result:</label>
     <select class="ms-1 me-5 navselect " data-style="btn-primary" name="status" id="">
-
+        <option value="">Show All</option>
+        {% for status in test_results %}
+        {% if last_result != '' and status.result == last_result %}
+        <option value="{{ status.result }}" selected="selected">{{ status.result}}</option>
+        {% else %}
+        <option value="{{ status.result }}">{{ status.result}}</option>
+        {% endif %}
+        {% endfor %}
+    </select>
+        
     <label  class = "ms-5 navlabel" for="">Fail Group:</label>
     <select class="ms-1 me-5 navselect " data-style="btn-primary" name="failgroup" id="">
-
-        {% for i in f %}
-        
-        <option value="{{ i }}">{{ i }}</option>
-        
+        <option value="">Show All</option>
+        {% for i in group_fail %}
+        {% if last_fail != '' and i.fail_group_name == last_fail %}
+        <option value="{{ i.fail_group_name }}" selected="selected">{{ i.fail_group_name }}</option>
+        {% else %}
+        <option value="{{ i.fail_group_name }}">{{ i.fail_group_name }}</option>
+        {% endif %}
         {% endfor %}
     </select>
 
     <input class="ms-5 btn btn-outline-dark p-auto float-md-end" type="submit" value="Filter">
+    <a href="{% url 'project' pk %}">Reset</a>
 </form>    
 
 <table>
