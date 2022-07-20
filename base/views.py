@@ -7,8 +7,10 @@ from .forms import ProjectForm, VisitorForm, VisitorFormUser, VisitorFormUpdate,
 from django.db.models import Q
 from django.views.generic.edit import FormView
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
 from . data_load import load_file
 
+@login_required(login_url='login')
 def home(request):
     projects = Test_project.objects.all()
     
@@ -231,6 +233,7 @@ def show_profile(request, pk):
 #         else:
 #             return self.form_invalid(form)
 
+@user_passes_test(lambda u: u.is_superuser)
 def upload_data(request, pk):
     form = UploadFileForm
     if request.method == 'POST':
