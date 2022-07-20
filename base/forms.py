@@ -3,11 +3,11 @@ from django import forms
 from .models import Test_project, Visitor
 from django.contrib.auth.forms import UserCreationForm
 
-class VisitorForm(ModelForm):
+class VisitorForm(UserCreationForm):
     class Meta:
         model = Visitor
         projects = Test_project.objects.all()
-        fields = ['username', 'first_name', 'last_name', 'email', 'password', 'user_permissions', 'is_visitor', 'visible_test_projects']
+        fields = ['username', 'first_name', 'last_name', 'email', 'user_permissions', 'is_visitor', 'visible_test_projects']
     #projects = forms.MultipleChoiceField(queryset=Test_project.objects.all())
 
 class ProjectForm(ModelForm):

@@ -1,4 +1,3 @@
-from email import message
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -37,7 +36,7 @@ def login_page(request):
             login(request, user) #pridame session do databaze, vytvorime cookies
             return redirect('home')
         else:
-            message.error(request, 'Your account does not exist.')
+            messages.error(request, 'Your account does not exist.')
     
     context = {}
     return render(request, 'base/login_autentizace.html', context)
