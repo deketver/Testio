@@ -10,6 +10,8 @@
         <th>Surname</th>
         <th>Username</th>
         <th>Visible projects</th>
+        <th>Edit user</th>
+        <th>Delete user</th>
     </tr>
     {% for visitor in visitors %}
     <tr> 
@@ -19,6 +21,8 @@
         <td>{% for project in visitor.visible_test_projects.all %} {{project}};
             {% endfor%}
         </td>
+        <td> <a href="{% url 'update_visitor' visitor.id %}">Edit </a></td>
+        <td> <a href="{% url 'delete_visitor' visitor.id %}">Delete </a></td>
     </tr>
     {% endfor %}
 </table>

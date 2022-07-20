@@ -14,3 +14,17 @@ class ProjectForm(ModelForm):
     class Meta:
         model = Test_project
         fields = '__all__'
+
+class VisitorFormUser(UserCreationForm):
+    class Meta:
+        model = Visitor
+        fields = ['username', 'first_name', 'last_name', 'email']
+
+class VisitorFormUpdate(ModelForm):
+    class Meta:
+        model = Visitor
+        fields = ['username', 'first_name', 'last_name', 'email', 'visible_test_projects']
+
+class UploadFileForm(forms.Form):
+    #title = forms.CharField(max_length=50)
+    file = forms.FileField()

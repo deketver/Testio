@@ -4,5 +4,81 @@
 
 <h1>Testing project - {{project.name}}</h1>
 
+{%if request.user.is_superuser %}
+
+<a href="{% url 'upload_data' project.id %}">Add source data</a>
+
+{% endif %}
+
+{% if data %}
+
+<form method="GET" action="{% url 'project' pk %}" class="mb-0">
+    <label  class = "ms-5 navlabel" for="">Name:</label>
+    <select class="ms-1 me-5 navselect " name="product" id="">
+        {% for name in names %}
+                
+        <option value="{{ name.name }}">{{ name.name }}</option>
+        
+        {% endfor %}
+    </select>
+    
+    <label  class = "ms-5 navlabel" for="">Sf Code:</label>
+    <select class="ms-1 me-5 navselect" data-style="btn-primary" name="sfcode" id="">
+        {% for code in sfcodes %}
+                
+        <option value="{{ code.sf_code }}">{{ code.sf_code }}</option>
+        
+        {% endfor %}
+    </select>
+
+    <label  class = "ms-5 navlabel" for="">Family:</label>
+    <select class="ms-1 me-5 navselect " data-style="btn-primary" name="family" id="">
+
+    <label  class = "ms-5 navlabel" for="">Result:</label>
+    <select class="ms-1 me-5 navselect " data-style="btn-primary" name="status" id="">
+
+    <label  class = "ms-5 navlabel" for="">Fail Group:</label>
+    <select class="ms-1 me-5 navselect " data-style="btn-primary" name="failgroup" id="">
+
+        {% for i in f %}
+        
+        <option value="{{ i }}">{{ i }}</option>
+        
+        {% endfor %}
+    </select>
+
+    <input class="ms-5 btn btn-outline-dark p-auto float-md-end" type="submit" value="Filter">
+</form>    
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Sf Code</th>
+        <th>Family</th>
+        <th>Result</th>
+        <th>Fail Group Name</th>
+        <th>Test Total Time</th>
+        <th>Timestamp</th>
+        <th>Number of Tests</th>
+    </tr>
+    {% for part in data%}
+    <tr>
+    <td>{{ part.name }}</td>
+    <td>{{ part.sf_code }}</td>
+    <td>{{ part.family }}</td>
+    <td>{{ part.result }}</td>
+    <td>{{ part.fail_group_name }}</td>
+    <td>{{ part.test_total_time }}</td>
+    <td>{{ part.timestamp }}</td>
+    <td>{{ part.number_of_test }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% else %}
+
+<h5>No data have been added to this project yet.</h5>
+
+{% endif %}
 
 {% endblock %}

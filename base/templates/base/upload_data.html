@@ -1,0 +1,37 @@
+{% extends 'main.html' %}
+
+{% block content%}
+
+<div>
+    <form enctype="multipart/form-data" method="POST" action="">
+        {% csrf_token %}
+
+        {{form.as_p}}
+
+        <!--<input type="button" id="submit_btn" class="btn border border-dark" value="browse"> -->
+        <button class="btn btn-success  mb-3" type="submit">Upload</button>
+
+    </form>
+</div>
+
+<script>
+     
+    $('#submit_btn').click(function(){
+       $('#file').click();
+    });
+
+    $('input[name=file]').change(function(){
+       var names = [];
+       for (var i = 0; i < $(this).get(0).files.length; ++i) {
+           names.push($(this).get(0).files[i].name);
+       }
+       
+       alert(names);
+       $('#filename').val('Selected files: ' + names.length);
+    });
+
+       
+   </script>
+
+
+{% endblock %}

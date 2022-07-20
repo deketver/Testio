@@ -3,14 +3,24 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import Visitor, Test_project, High_level_tests
-from django.http import HttpResponse
-from .forms import ProjectForm, VisitorForm
+from .forms import ProjectForm, VisitorForm, VisitorFormUser, VisitorFormUpdate, UploadFileForm
+from django.views.generic.edit import FormView
+from django.contrib.auth.decorators import user_passes_test
+from . data_load import load_file
 
 def home(request):
     projects = Test_project.objects.all()
-    context = {'projects': projects}
-
-    return render(request, 'base/home.html', context)
+    
+    if request.user.is_superuser == False:
+        visitor = Visitor.objects.get(id=request.user.id)
+        field_object = Visitor._meta.get_field('visible_test_projects')
+        available_projects = field_object.value_from_object(visitor)
+        print(available_projects)
+        context = {'projects': available_projects}
+        return render(request, 'base/home.html', context)
+    else:
+        context = {'projects': projects}
+        return render(request, 'base/home.html', context)
 
 
 def logout_user(request):
@@ -42,14 +52,35 @@ def login_page(request):
     return render(request, 'base/login_autentizace.html', context)
 
 def project(request, pk):
+
+    product = request.GET.get('product') if request.GET.get('product') != None else ''
+    from_date = request.GET.get('from') if request.GET.get('from') != None else ''
+    until = request.GET.get('until') if request.GET.get('until') != None else ''
+
     project = Test_project.objects.get(id=pk)
-    # for i in rooms:
-    #     if i['id'] == int(pk):
-    #         room = i
-    context = {'project': project}
-    return render(request, 'base/project_page.html', context)
+    available_data = High_level_tests.objects.filter(project=pk)
 
+    distinct_names = High_level_tests.objects.all().values('name').distinct()
+    distinct_sf_codes = High_level_tests.objects.all().values('sf_code').distinct()
 
+    permission = request.user.is_superuser
+
+    context = {'project': project, 'data': available_data, 'pk': pk, 'names': distinct_names, 'sfcodes': distinct_sf_codes}
+
+    if permission==False:
+        visitor = Visitor.objects.get(id=request.user.id)
+        field_object = Visitor._meta.get_field('visible_test_projects')
+        available_projects = field_object.value_from_object(visitor)
+
+        for project in available_projects:
+            if project.id == int(pk):
+                print("Naslo se")
+                return render(request, 'base/project_page.html', context)    
+        return redirect('home')
+    else:
+        return render(request, 'base/project_page.html', context)
+
+@user_passes_test(lambda u: u.is_superuser)
 def create_visitor(request):
     form = VisitorForm()
     if request.method == 'POST':
@@ -61,12 +92,13 @@ def create_visitor(request):
     context = {'form': form}
     return render(request, 'base/visitor_form.html', context)
 
+
 def update_visitor(request, pk):
     visitor = Visitor.objects.get(id=pk)
-    form = VisitorForm(instance=visitor) # davame do formulare rovnou predvyplnena data odpovidajiciho uzivatele
+    form = VisitorFormUpdate(instance=visitor) # davame do formulare rovnou predvyplnena data odpovidajiciho uzivatele
 
     if request.method == 'POST':
-        form = VisitorForm(request.POST, instance=visitor)
+        form = VisitorFormUpdate(request.POST, instance=visitor)
         if form.is_valid():
             form.save()
             return redirect('home')
@@ -74,7 +106,7 @@ def update_visitor(request, pk):
     context = {'form': form}
     return render(request, 'base/visitor_form.html', context)
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def create_project(request):
     form = ProjectForm()
     if request.method == 'POST':
@@ -85,6 +117,7 @@ def create_project(request):
     context = {'form': form}
     return render(request, 'base/testproject_form.html', context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def update_project(request, pk): 
     project = Test_project.objects.get(id=pk)
     form = ProjectForm(instance=project) 
@@ -98,7 +131,7 @@ def update_project(request, pk):
     context = {'form': form}
     return render(request, 'base/testproject_form.html', context)
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def delete_project(request, pk):
     project = Test_project.objects.get(id=pk)
     if request.method == 'POST':
@@ -106,9 +139,94 @@ def delete_project(request, pk):
         return redirect('home')
     return render(request, 'base/delete.html', {'object': project})
 
+@user_passes_test(lambda u: u.is_superuser)
+def delete_visitor(request, pk):
+    visitor = Visitor.objects.get(id=pk)
+    if request.method == 'POST':
+        visitor.delete()
+        return redirect('home')
+    return render(request, 'base/delete.html', {'object': visitor})
+
+@user_passes_test(lambda u: u.is_superuser)
 def list_visitors(request):
     visitors = Visitor.objects.all()
     context = {'visitors': visitors}
     #print(visitors.visible_test_projects.all())
     return render(request, 'base/see_visitors.html', context)
+
+def show_profile(request, pk):
+    if request.user.is_superuser == False:
+        visitor = Visitor.objects.get(id=pk)
+        form = VisitorFormUser(instance=visitor) # davame do formulare rovnou predvyplnena data odpovidajiciho uzivatele
+
+        if request.method == 'POST':
+            form = VisitorFormUser(request.POST, instance=visitor)
+            if form.is_valid():
+                form.save()
+                return redirect('home')
+
+        if request.user.id != int(pk):
+            return redirect('home')
+
+        context = {'form': form}
+        return render(request, 'base/visitor_form.html', context)
+    else:
+        user = User.objects.get(id=pk)
+        form = VisitorFormUser(instance=user) # davame do formulare rovnou predvyplnena data odpovidajiciho uzivatele
+
+        if request.method == 'POST':
+            form = VisitorFormUser(request.POST, instance=user)
+            if form.is_valid():
+                form.save()
+                return redirect('home')
+
+        context = {'form': form}
+        return render(request, 'base/visitor_form.html', context)
+
+# class FileFieldFormView(FormView):
+#     def __init__(self):
+#         super().__init__()
+#         self.form_class = FileFieldForm
+#         self.template_name = 'upload_data.html'  # Replace with your template.
+#         self.success_url = 'home'  # Replace with your URL or reverse().
+
+#     def post(self, request=None, *args, **kwargs):
+#         form_class = self.get_form_class()
+#         form = self.get_form(form_class)
+#         files = request.FILES.getlist('file_field')
+#         if form.is_valid():
+#             for f in files:
+#                 print("Got file! Yeah!")
+#                 print(f)
+#             return self.form_valid(form)
+#         else:
+#             return self.form_invalid(form)
+
+def upload_data(request, pk):
+    form = UploadFileForm
+    if request.method == 'POST':
+
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            filename = str(request.FILES['file'])
+            print(request.FILES['file'])
+            print(dir(request.FILES['file']))
+            case = Test_project.objects.get(id=pk)
+            #print(request.FILE.items)
+            #print(request.FILES['filename'])
+            load_file(filename, request.FILES['file'], case)
+            #for filename, file in request.FILES.iteritems():
+             #   name = request.FILES[filename].name
+             #   print(name)
+            print('POST and valid')
+            return redirect('project', pk=pk)
+
+    context = {'form': form}
+    return render(request, 'base/upload_data.html', context)
+
+
+
+    
+
+
 
