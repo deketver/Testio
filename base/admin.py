@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Test_project, High_level_tests, Visitor
+from .models import Test_project, Visitor, High_level_tests 
 
 # Register your models here.
 

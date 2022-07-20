@@ -1,0 +1,26 @@
+{% extends 'main.html'%}
+
+{% block content%}
+
+<h1>List of created visitors</h1>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Surname</th>
+        <th>Username</th>
+        <th>Visible projects</th>
+    </tr>
+    {% for visitor in visitors %}
+    <tr> 
+        <td>{{ visitor.first_name }}</td>
+        <td>{{ visitor.last_name }}</td>
+        <td>{{ visitor.username }}</td>
+        <td>{% for project in visitor.visible_test_projects.all %} {{project}};
+            {% endfor%}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock content %}

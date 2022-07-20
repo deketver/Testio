@@ -4,4 +4,18 @@
 
 <h1>Home</h1>
 
+
+<div>
+    {% for project in projects%}
+    <div>
+        <h5>{{project.id}} -- <a href="{% url 'project' project.id %}">{{project.name}}</a></h5>
+        <a href="{% url 'update_project' project.id %}">Edit</a>
+        <a href="{% url 'delete_project' project.id %}">Delete</a>
+        <hr>
+    </div>
+    {% endfor%}
+</div>
+
+
+
 {% endblock %}

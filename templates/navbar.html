@@ -16,6 +16,11 @@
 
 {%if request.user.is_authenticated %}
 
+<a href="{% url 'home' %}">Home</a>
+<a href="{% url 'create_project' %}">Create Project</a>
+<a href="{% url 'create_visitor' %}">Create new user</a>
+<a href="{% url 'list_visitors' %}">List all users</a>
+
 <a href="{% url 'logout' %}"> Logout </a>
 
 {% else %}
