@@ -124,7 +124,7 @@ def create_visitor(request):
     context = {'form': form}
     return render(request, 'base/visitor_form.html', context)
 
-
+@login_required(login_url='login')
 def update_visitor(request, pk):
     visitor = Visitor.objects.get(id=pk)
     form = VisitorFormUpdate(instance=visitor) # davame do formulare rovnou predvyplnena data odpovidajiciho uzivatele
@@ -195,6 +195,7 @@ def list_visitors(request):
     #print(visitors.visible_test_projects.all())
     return render(request, 'base/see_visitors.html', context)
 
+@login_required(login_url='login')
 def show_profile(request, pk):
     if request.user.is_superuser == False:
         visitor = Visitor.objects.get(id=pk)
