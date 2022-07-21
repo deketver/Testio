@@ -30,10 +30,8 @@ def logout_user(request):
     logout(request)
     return redirect('login')
 
-def login_page(request):
-    #if request.user.is_authenticated():
-    #   return redirect('home')
 
+def login_page(request):
     if request.method =='POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -54,6 +52,7 @@ def login_page(request):
     context = {}
     return render(request, 'base/login_autentizace.html', context)
 
+@login_required(login_url='login')
 def project(request, pk):
     filter_active = False
     permission = request.user.is_superuser
@@ -94,9 +93,6 @@ def project(request, pk):
     count_failed = available_data.filter(Q(result__contains='FAIL')).count()
     max_time = available_data.aggregate(Max('test_total_time'))
     max_tests = available_data.aggregate(Max('number_of_test'))
-
-        #available_data = High_level_tests.objects.filter(Q(name__icontains=product))
-        #last_name=product
 
     context = {'project': project, 'data': available_data, 'pk': pk, 'names': distinct_names, 'sfcodes': distinct_sf_codes, 'family': distinct_family,
                 'test_results': distinct_results, 'group_fail': distinct_fail, 'last_name': last_name, 'last_sf_code': last_sf_code, 'last_family': last_family,
@@ -228,24 +224,7 @@ def show_profile(request, pk):
         context = {'form': form}
         return render(request, 'base/visitor_form.html', context)
 
-# class FileFieldFormView(FormView):
-#     def __init__(self):
-#         super().__init__()
-#         self.form_class = FileFieldForm
-#         self.template_name = 'upload_data.html'  # Replace with your template.
-#         self.success_url = 'home'  # Replace with your URL or reverse().
 
-#     def post(self, request=None, *args, **kwargs):
-#         form_class = self.get_form_class()
-#         form = self.get_form(form_class)
-#         files = request.FILES.getlist('file_field')
-#         if form.is_valid():
-#             for f in files:
-#                 print("Got file! Yeah!")
-#                 print(f)
-#             return self.form_valid(form)
-#         else:
-#             return self.form_invalid(form)
 
 @user_passes_test(lambda u: u.is_superuser)
 def upload_data(request, pk):
@@ -258,12 +237,8 @@ def upload_data(request, pk):
             print(request.FILES['file'])
             print(dir(request.FILES['file']))
             case = Test_project.objects.get(id=pk)
-            #print(request.FILE.items)
-            #print(request.FILES['filename'])
             load_file(filename, request.FILES['file'], case)
-            #for filename, file in request.FILES.iteritems():
-             #   name = request.FILES[filename].name
-             #   print(name)
+
             print('POST and valid')
             return redirect('project', pk=pk)
 

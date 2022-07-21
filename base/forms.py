@@ -27,5 +27,4 @@ class VisitorFormUpdate(ModelForm):
         fields = ['username', 'first_name', 'last_name', 'email', 'visible_test_projects']
 
 class UploadFileForm(forms.Form):
-    #title = forms.CharField(max_length=50)
     file = forms.FileField()

@@ -21,10 +21,6 @@ class Visitor(User):
      def __str__(self) -> str:
          return super().__str__()
 
-# class Visitor(models.Model):
-#      user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-#      test_group = models.ManyToManyField(Test_project)
-
 
 class High_level_tests(models.Model):
     project = models.ForeignKey(Test_project, on_delete=models.CASCADE)
