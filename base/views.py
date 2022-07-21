@@ -143,7 +143,9 @@ def create_project(request):
     if request.method == 'POST':
         form = ProjectForm(request.POST)
         if form.is_valid():
-            form.save()
+            project = form.save(commit=False)
+            project.host = request.user
+            project.save()
             return redirect('home')
     context = {'form': form}
     return render(request, 'base/testproject_form.html', context)
@@ -180,7 +182,14 @@ def delete_visitor(request, pk):
 
 @user_passes_test(lambda u: u.is_superuser)
 def list_visitors(request):
+
+    search_user = request.GET.get('search_user') if request.GET.get('search_user') != None else ''
+    
     visitors = Visitor.objects.all()
+
+    if search_user != '':
+        visitors = Visitor.objects.filter(first_name__regex=r'^'+search_user+'.*')
+    
     context = {'visitors': visitors}
     #print(visitors.visible_test_projects.all())
     return render(request, 'base/see_visitors.html', context)

@@ -1,20 +1,57 @@
-{% extends 'main.html' %}
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testio</title>
+
+    <link rel="stylesheet" href="{% static 'bootstrap\dist\css\bootstrap.css'%}">
+    <link rel="stylesheet" href="{% static 'styles\styly.css'%}">
+    <link rel="stylesheet" href="{% static 'styles\styly2.css'%}">
+    <!-- <script> src="{% static 'bootstrap\dist\js\bootstrap.js'%}"</script> -->
+    <style>
+    @media screen and (min-width: 400px) and (max-width: 600px) {
+        .w_25 {
+            width: 75%;
+        }
+    }
+    form{
+         background: #fff;
+         border-radius: 20px;
+    }
+</style>
+</head>
+<body>
 
 {% block content %}
+<h2>Login to Testio</h2>
+<div class="container justify-content-center py-5">
+    <div class="row justify-content-center ">
+        <div class=" col-md-4 col-sm-6 w_25 justify-content-center text-center">
+            <form class="p-5 text-start form-upload" method="POST" action="">
+                {% csrf_token %}
+                
+                <div class="form-outline mb-4 ">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" name="username" placeholder="Enter Username"/>
+                </div>
 
-<div>
-    <form method="POST" action="">
-        {% csrf_token %}
+                <div class="form-outline mb-4">
+                <label class="form-label" for="password">Password</label>
+                <input class="form-control" type="password" name="password" placeholder="Enter Password"/>
+                </div>
 
-        <label>Username:</label>
-        <input type="text" name="username" placeholder="Enter Username"/>
+                <div class="text-center pt-1 mb-5 pb-1">
+                <input class="btn btn-success  mb-3" type="submit" value="Login"/>
+                </div>
 
-        <label>Password:</label>
-        <input type="password" name="password" placeholder="Enter Password"/>
-
-        <input type="submit" value="Login"/>
-
-    </form>
+            </form>
+        </div>
+    </div>
 </div>
 
 {% endblock content %}
+</body>
+</html>

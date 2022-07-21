@@ -1,27 +1,28 @@
 {% extends 'main.html' %}
 
-{% block content%}
+{% block prop %}
+<div class="container-fluid position-relative">
 
 <h1>Home</h1>
 
 
-<div>
-    {% if not projects %}
-    <h5>You do not have permissions to see any project. Please contact your project supervisor.</h5>
-    {% else %}
-    {% for project in projects%}
-    <div>
-        <h5>{{project.id}} -- <a href="{% url 'project' project.id %}">{{project.name}}</a></h5>
-        {%if request.user.is_superuser %}
-        <a href="{% url 'update_project' project.id %}">Edit</a>
-        <a href="{% url 'delete_project' project.id %}">Delete</a>
+    <div class="row col_info mb-sm-3 d-flex mx-3">
+        {% if not projects %}
+        <h5>You do not have permissions to see any project. Please contact your project supervisor.</h5>
+        {% else %}
+        {% for project in projects%}
+        <div>
+            <h5>{{project.id}} -- <a href="{% url 'project' project.id %}" class="project_name">{{project.name}}</a></h5>
+            {%if request.user.is_superuser %}
+            <a href="{% url 'update_project' project.id %}">Edit</a>
+            <a href="{% url 'delete_project' project.id %}">Delete</a>
+            {% endif %}
+            <hr>
+        </div>
+        {% endfor%}
         {% endif %}
-        <hr>
     </div>
-    {% endfor%}
-    {% endif %}
+
+
 </div>
-
-
-
-{% endblock %}
+{% endblock prop %}

@@ -1,10 +1,12 @@
 {% extends 'main.html' %}
 
-{% block content %}
-<form method="POST" action="">
+{% block prop %}
+<div class="container-fluid position-relative">
+<form method="POST" action="" class="mb-0">
     {% csrf_token %}
     <p>Are you sure you want to delete "{{object}}" ? </p>
     
     <a href="{{request.META.HTTP_REFERER}}">Go Back</a>
-    <input type="submit" value="Confirm" />
-{% endblock content%}
+    <input class="btn btn-success  mb-3" type="submit" value="Confirm" />
+</div>
+{% endblock prop %}

@@ -1,31 +1,31 @@
-<!--
-<a href="/">
-    <h1> Úvodní stránka </h1>
-</a>
--->
 
+<div class="container-fluid position-relative">
 <h1>Testio</h1>
+<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
 <h2>Making engineering results visible</h2>
-
-<!--
-<form method="GET" action="{% url 'home' %}"> 
-    <input type="text" name="q" placeholder="Search Rooms ..." />
-
-</form>
--->
+</div>
+</div>
 
 {%if request.user.is_authenticated %}
+<header style=" background: #fff;" class="p-3 text-dark">
+    <div class="container ">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="{% url 'home' %}" class="nav-link px-2 text-dark">Home</a></li>
 
-<a href="{% url 'home' %}">Home</a>
+            {%if request.user.is_superuser %}
 
-{%if request.user.is_superuser %}
-<a href="{% url 'create_project' %}">Create Project</a>
-<a href="{% url 'create_visitor' %}">Create new user</a>
-<a href="{% url 'list_visitors' %}">List all users</a>
-{% endif%}
+            <li><a href="{% url 'create_project' %}" class="nav-link px-2 text-dark">Create project</a></li>
+            <li><a href="{% url 'create_visitor' %}" class="nav-link px-2 text-dark">Create new user</a></li>
+            <li><a href="{% url 'list_visitors' %}" class="nav-link px-2 text-dark">List all users</a></li>
+            {% endif%}
 
-<a href="{% url 'show_profile' user.id %}">{{user.username}}</a>
-<a href="{% url 'logout' %}">Logout</a>
+            <li><a href="{% url 'show_profile' user.id %}" class="nav-link px-2 text-dark">{{user.username}}</a></li>
+        </ul>
+            <div class="text-end">
+            <a href="{% url 'logout' %}" class="ms-3">Logout</a>
+            </div>
+</header>
 
 {% else %}
 
@@ -33,4 +33,3 @@
 
 {% endif%}
 
-<hr>

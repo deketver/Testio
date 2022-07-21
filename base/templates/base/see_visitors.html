@@ -1,30 +1,44 @@
 {% extends 'main.html'%}
 
-{% block content%}
+{% block prop %}
+<div class="container-fluid position-relative">
+<h3>List of created visitors</h3>
 
-<h1>List of created visitors</h1>
+    <div class="row col_info mb-sm-3 d-flex mx-3" >
+    
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Username</th>
+            <th>Visible projects</th>
+            <th>Edit user</th>
+            <th>Delete user</th>
+        </tr>
+        {% for visitor in visitors %}
+        <tr> 
+            <td>{{ visitor.first_name }}</td>
+            <td>{{ visitor.last_name }}</td>
+            <td>{{ visitor.username }}</td>
+            <td>{% for project in visitor.visible_test_projects.all %} {{project}};
+                {% endfor%}
+            </td>
+            <td> <a href="{% url 'update_visitor' visitor.id %}">Edit </a></td>
+            <td> <a href="{% url 'delete_visitor' visitor.id %}">Delete </a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
 
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Surname</th>
-        <th>Username</th>
-        <th>Visible projects</th>
-        <th>Edit user</th>
-        <th>Delete user</th>
-    </tr>
-    {% for visitor in visitors %}
-    <tr> 
-        <td>{{ visitor.first_name }}</td>
-        <td>{{ visitor.last_name }}</td>
-        <td>{{ visitor.username }}</td>
-        <td>{% for project in visitor.visible_test_projects.all %} {{project}};
-            {% endfor%}
-        </td>
-        <td> <a href="{% url 'update_visitor' visitor.id %}">Edit </a></td>
-        <td> <a href="{% url 'delete_visitor' visitor.id %}">Delete </a></td>
-    </tr>
-    {% endfor %}
-</table>
 
-{% endblock content %}
+    <div class="row col_info mb-sm-3 d-flex mx-3">
+        <nav style="border-radius: 10px;"  class = "nav  p-3 pb-3 ms-0 col_info">
+        <form method="GET" action="{% url 'list_visitors' %}" class="mb-0">
+            <label  class = "navlabel" for="">First Name</label>
+            <input class="btn btn-outline-dark p-auto" type="text" name="search_user">
+            <input class="ms-5 btn btn-outline-dark p-auto" type="submit" value="Filter">
+        </form>
+
+    </div>
+</div>
+{% endblock prop %}
