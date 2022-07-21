@@ -1,29 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
-
-# class Xml_Files(models.Model):
-#     unique_id = models.CharField(max_length=400, blank=False, unique=True)
-#     name = models.CharField(max_length=300)
-#     sf_code = models.CharField(max_length=300) #identifikator typu produktu
-#     family = models.CharField(max_length=200)
-#     sf_sn = models.CharField(max_length=200,  blank=True)  #seriove cislo short
-#     si_id_string = models.CharField(max_length=200, null=True, blank=True) #seriove cislo full
-#     result = models.CharField(max_length=200)
-#     fail_test_name = models.CharField(max_length=300,default='', null=True, blank=True)
-#     fail_group_name = models.CharField(max_length=200,default='', null=True, blank=True)
-#     test_total_time = models.IntegerField()
-#     tester_info = models.CharField(max_length=200,  blank=True) #nazev testovaci aplikace a jeji cislo
-#     user_name = models.CharField(max_length=200,  blank=True) #uzivatel z vyrobniho zavodu
-#     timestamp = models.DateTimeField() #example "2022-03-01 00:39:50.8" - bude asi prevest na datetime z isoformatu
-#     ini_security = models.CharField(max_length=300,  blank=True) #unikatni security 
-#     number_of_test = models.IntegerField(default=0,  blank=True)  #pocet souboru v ramci test scenario
-
-#     def __str__(self):
-#         return self.unique_id
-
-
 
 class Test_project(models.Model):
     host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) #nekdo musi hostovat dany room

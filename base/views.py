@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from .models import Visitor, Test_project, High_level_tests
 from .forms import ProjectForm, VisitorForm, VisitorFormUser, VisitorFormUpdate, UploadFileForm
 from django.db.models import Q
-from django.views.generic.edit import FormView
+from django.db.models import Sum, Max
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
 from . data_load import load_file
@@ -90,13 +90,18 @@ def project(request, pk):
         last_fail = failgroup
         filter_active = True
 
+    test_total = available_data.aggregate(Sum('test_total_time'))
+    count_failed = available_data.filter(Q(result__contains='FAIL')).count()
+    max_time = available_data.aggregate(Max('test_total_time'))
+    max_tests = available_data.aggregate(Max('number_of_test'))
 
         #available_data = High_level_tests.objects.filter(Q(name__icontains=product))
         #last_name=product
 
     context = {'project': project, 'data': available_data, 'pk': pk, 'names': distinct_names, 'sfcodes': distinct_sf_codes, 'family': distinct_family,
                 'test_results': distinct_results, 'group_fail': distinct_fail, 'last_name': last_name, 'last_sf_code': last_sf_code, 'last_family': last_family,
-                'last_result': last_result, 'last_fail': last_fail, 'filter_active': filter_active}
+                'last_result': last_result, 'last_fail': last_fail, 'filter_active': filter_active, 'test_total': test_total, 'count_failed': count_failed,
+                'max_time': max_time, 'max_tests': max_tests}
 
     if permission==False:
         visitor = Visitor.objects.get(id=request.user.id)

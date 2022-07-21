@@ -8,7 +8,7 @@
 <div class="row col_info mb-sm-3 d-flex mx-3">
     {%if request.user.is_superuser %}
 
-    <a href="{% url 'upload_data' project.id %}">Add source data</a>
+    <a href="{% url 'upload_data' project.id %}" class="ms-1 me-5 navselect" >Add source data</a>
 
     {% endif %}
 
@@ -116,19 +116,19 @@
         </tr>
         <tr>
             <td>Sum Total Test Time</td>
-            <td>Sf Code</td>
+            <td>{{test_total.test_total_time__sum}}</td>
         </tr>
         <tr>
-            <td>Sum Total Test Time</td>
-            <td>Sf Code</td>
+            <td>Max Total Test Time</td>
+            <td>{{max_time.test_total_time__max}}</td>
         </tr>
         <tr>
             <td>Number of Failed Tests</td>
-            <td>Sf Code</td>
+            <td>{{count_failed}}</td>
         </tr>
         <tr>
             <td>Max Number of Tests</td>
-            <td>Sf Code</td>
+            <td>{{max_tests.number_of_test__max}}</td>
         </tr>
     </table>
 
